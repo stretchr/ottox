@@ -1,19 +1,11 @@
 package ottox
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/robertkrimen/otto"
 	"io"
 	"io/ioutil"
 )
-
-func toJson(o interface{}) string {
-	if bytes, err := json.Marshal(o); err == nil {
-		return string(bytes)
-	}
-	return ""
-}
 
 // AddReader adds a read method to the specified runtime that allows
 // client code to read from the specified reader.
@@ -93,8 +85,4 @@ func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 func raiseError(runtime *otto.Otto, format string, args ...interface{}) {
 	var msg = fmt.Sprintf(format, args...)
 	runtime.Call("console.info", nil, msg)
-}
-
-func makeMap(runtime *otto.Otto, m map[string]interface{}) (otto.Value, error) {
-	return runtime.Run(fmt.Sprintf("eval(%s);", toJson(m)))
 }
