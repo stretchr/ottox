@@ -12,13 +12,14 @@ import (
 //
 // The client function created has the following syntax:
 //
-//     var response = methodName(bytesToRead);
+//     var response = readMethodName(bytesToRead);
 //
 // Response object:
 //
 //     {
 //       data: "This was read from the reader.",
-//       eof: false|true
+//       eof: false|true,
+//       error: error|undefined
 //     }
 //
 // If eof is false, client code should keep calling the read method
@@ -30,28 +31,36 @@ func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 
 	runtime.Set(methodName, func(call otto.FunctionCall) otto.Value {
 
-		if l, err := call.Argument(0).ToInteger(); err != nil {
+		var err error
+		var l int64
+		var all []byte
+		var val otto.Value
+		var bytesRead int
+
+		if l, err = call.Argument(0).ToInteger(); err != nil {
 			raiseError(runtime, "First argument to read methods must be an integer: %s", err)
 		} else {
 
 			if l == -1 {
 
-				all, err := ioutil.ReadAll(reader)
+				all, err = ioutil.ReadAll(reader)
 				if err != nil {
 					raiseError(runtime, "Failed to read from io.Reader: %s", err)
-				}
-
-				if val, err := makeMap(runtime, map[string]interface{}{"data": string(all), "eof": true}); err != nil {
-					raiseError(runtime, "Failed to create output object: %s", err)
 				} else {
-					return val
+
+					if val, err = makeMap(runtime, map[string]interface{}{"data": string(all), "eof": true}); err != nil {
+						raiseError(runtime, "Failed to create output object: %s", err)
+					} else {
+						return val
+					}
+
 				}
 
 			} else {
 
 				// read x bytes from the reader
 				buf := make([]byte, l)
-				bytesRead, err := reader.Read(buf)
+				bytesRead, err = reader.Read(buf)
 				var isEof bool = false
 				if err == io.EOF {
 					isEof = true
@@ -65,7 +74,7 @@ func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 					dataStr = string(buf)
 				}
 
-				if val, err := makeMap(runtime, map[string]interface{}{"data": dataStr, "eof": isEof}); err != nil {
+				if val, err = makeMap(runtime, map[string]interface{}{"data": dataStr, "eof": isEof}); err != nil {
 					raiseError(runtime, "Failed to create output object: %s", err)
 				} else {
 					return val
@@ -73,6 +82,15 @@ func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 
 			}
 
+		}
+
+		if err != nil {
+			if val, err := makeMap(runtime, map[string]interface{}{"eof": true, "error": err.Error()}); err != nil {
+				raiseError(runtime, "Failed to create output object: %s", err)
+				return otto.UndefinedValue()
+			} else {
+				return val
+			}
 		}
 
 		// nothing to return
