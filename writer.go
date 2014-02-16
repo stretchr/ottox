@@ -15,8 +15,8 @@ import (
 // Response object:
 //
 //     {
-//	     len: bytes_written,
-//       error: error|undefined
+//       len: bytes_written,
+//        error: error|undefined
 //     }
 func AddWriter(runtime *otto.Otto, methodName string, writer io.Writer) error {
 

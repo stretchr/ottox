@@ -8,6 +8,8 @@ import (
 //
 // Returns whether the value was set or not, or an error if it failed to
 // set it.
+//
+// For acceptable values, see http://godoc.org/github.com/robertkrimen/otto#Otto.Set
 func SetOnce(runtime *otto.Otto, name string, value interface{}) (bool, error) {
 
 	if !Exist(runtime, name) {
