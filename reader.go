@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-// AddReader adds a read method to the specified runtime that allows
+// NewReader adds a read method to the specified runtime that allows
 // client code to read from the specified reader.
 //
 // The client function created has the following syntax:
@@ -28,7 +28,7 @@ import (
 // For example, to stream from the Stdin pipe:
 //
 //     // in go...
-//     AddReader(js, "readStdIn", os.Stdin)
+//     NewReader(js, "readStdIn", os.Stdin)
 //
 //     // in a script...
 //     var data = "";
@@ -40,7 +40,7 @@ import (
 //
 // Passing -1 as the bytesToRead will read the entire contents from
 // the reader immediately.
-func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
+func NewReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 
 	runtime.Set(methodName, func(call otto.FunctionCall) otto.Value {
 

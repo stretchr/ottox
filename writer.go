@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-// AddWriter adds a write method to the specified runtime that allows
+// NewWriter adds a write method to the specified runtime that allows
 // client code to write to the specified io.Writer.
 //
 // The client function created has the following syntax:
@@ -18,7 +18,7 @@ import (
 //       len: bytes_written,
 //        error: error|undefined
 //     }
-func AddWriter(runtime *otto.Otto, methodName string, writer io.Writer) error {
+func NewWriter(runtime *otto.Otto, methodName string, writer io.Writer) error {
 
 	runtime.Set(methodName, func(call otto.FunctionCall) otto.Value {
 

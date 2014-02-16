@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestAddWriter(t *testing.T) {
+func TestNewWriter(t *testing.T) {
 
 	runtime := otto.New()
 	var buf bytes.Buffer
 
-	assert.NoError(t, AddWriter(runtime, "write", &buf))
+	assert.NoError(t, NewWriter(runtime, "write", &buf))
 
 	// make sure ottox.read method was added
 	assert.True(t, Exist(runtime, "write"))
@@ -44,11 +44,11 @@ func (w writerThatThrowsError) Write(data []byte) (int, error) {
 	return 0, errors.New("Something went wrong")
 }
 
-func TestAddWriter_Error(t *testing.T) {
+func TestNewWriter_Error(t *testing.T) {
 
 	runtime := otto.New()
 
-	assert.NoError(t, AddWriter(runtime, "write", &writerThatThrowsError{}))
+	assert.NoError(t, NewWriter(runtime, "write", &writerThatThrowsError{}))
 
 	// make sure ottox.read method was added
 	assert.True(t, Exist(runtime, "write"))

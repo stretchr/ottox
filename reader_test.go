@@ -8,12 +8,12 @@ import (
 	"testing"
 )
 
-func TestAddReader(t *testing.T) {
+func TestNewReader(t *testing.T) {
 
 	runtime := otto.New()
 	reader := strings.NewReader("Hello ottox!")
 
-	assert.NoError(t, AddReader(runtime, "read", reader))
+	assert.NoError(t, NewReader(runtime, "read", reader))
 
 	// make sure ottox.read method was added
 	assert.True(t, Exist(runtime, "read"))
@@ -60,12 +60,12 @@ func TestAddReader(t *testing.T) {
 
 }
 
-func TestAddReader_ReadAll(t *testing.T) {
+func TestNewReader_ReadAll(t *testing.T) {
 
 	runtime := otto.New()
 	reader := strings.NewReader("Hello ottox!")
 
-	assert.NoError(t, AddReader(runtime, "read", reader))
+	assert.NoError(t, NewReader(runtime, "read", reader))
 
 	// make sure ottox.read method was added
 	assert.True(t, Exist(runtime, "read"))
@@ -92,11 +92,11 @@ func (r readerThatReturnsError) Read(data []byte) (int, error) {
 	return 0, errors.New("Something went wrong")
 }
 
-func TestAddReader_Error(t *testing.T) {
+func TestNewReader_Error(t *testing.T) {
 
 	runtime := otto.New()
 
-	assert.NoError(t, AddReader(runtime, "read", &readerThatReturnsError{}))
+	assert.NoError(t, NewReader(runtime, "read", &readerThatReturnsError{}))
 
 	// make sure ottox.read method was added
 	assert.True(t, Exist(runtime, "read"))
