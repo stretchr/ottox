@@ -25,7 +25,7 @@ import (
 // If eof is false, client code should keep calling the read method
 // until all data has been read.
 //
-// Passing -1 as the bytesToRead will real the entire contents from
+// Passing -1 as the bytesToRead will read the entire contents from
 // the reader.
 func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 
