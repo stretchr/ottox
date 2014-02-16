@@ -28,5 +28,5 @@ func generateMethodName(optionalPrefix ...string) string {
 	methodGenCounterLock.Lock()
 	methodGenCounter++
 	methodGenCounterLock.Unlock()
-	return fmt.Sprintf("%s%d", prefix, methodGenCounter)
+	return fmt.Sprintf("%s_%d", prefix, methodGenCounter)
 }
