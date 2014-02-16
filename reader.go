@@ -25,8 +25,21 @@ import (
 // If eof is false, client code should keep calling the read method
 // until all data has been read.
 //
+// For example, to stream from the Stdin pipe:
+//
+//     // in go...
+//     AddReader(js, "readStdIn", os.Stdin)
+//
+//     // in a script...
+//     var data = "";
+//     var response = {"eof":false};
+//     while (!response.eof) {
+//       response = readStdIn(255);
+//       data += response.data;
+//     }
+//
 // Passing -1 as the bytesToRead will read the entire contents from
-// the reader.
+// the reader immediately.
 func AddReader(runtime *otto.Otto, methodName string, reader io.Reader) error {
 
 	runtime.Set(methodName, func(call otto.FunctionCall) otto.Value {
